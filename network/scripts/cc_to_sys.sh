@@ -1,5 +1,6 @@
 #!/bin/bash
 
-# rm -R /var/mynetwork/chaincode/*
-mkdir -p /var/mynetwork/chaincode
-cp -R ../../chaincodes/* /var/mynetwork/chaincode/
+source $PWD/.env
+
+mkdir -p $VOLUMES_DIR/chaincode
+cp -R ../../chaincodes/* $VOLUMES_DIR/chaincode/
