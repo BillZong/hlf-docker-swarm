@@ -1,18 +1,23 @@
-# sudo mkdir -p /var/mynetwork
-# sudo chown -R $(whoami) /var/mynetwork
-# sudo chown -R $USER:$USER /var/mynetwork
-rm -rf mkdir /var/mynetwork/*
+source ${PWD}/.env
 
-mkdir -p /var/mynetwork/chaincode
-mkdir -p /var/mynetwork/certs
-mkdir -p /var/mynetwork/bin
-mkdir -p /var/mynetwork/fabric-src
+# recreate the directories
+rm -rf mkdir ${VOLUMES_DIR}/*
+mkdir -p ${VOLUMES_DIR}/chaincode
+mkdir -p ${VOLUMES_DIR}/certs
+mkdir -p ${VOLUMES_DIR}/bin
+mkdir -p ${VOLUMES_DIR}/fabric-src/hyperledger
 
-git clone https://github.com/hyperledger/fabric /var/mynetwork/fabric-src/hyperledger/fabric
-cd /var/mynetwork/fabric-src/hyperledger/fabric
-git checkout release-1.1
+if [ ! -d ../../fabric ]; then
+    echo "downloading the fabric src..."
+    git clone https://github.com/hyperledger/fabric ../../fabric
+fi
+cp -r /root/fabric/fabric ${VOLUMES_DIR}/fabric-src/hyperledger/
+cd ${VOLUMES_DIR}/fabric-src/hyperledger/fabric
+git checkout ${FABRIC_VERSION}
+# rm -rf .git # keep it small enough
+
 cd -
-cp -R crypto-config /var/mynetwork/certs/
-cp -R config /var/mynetwork/certs/
-cp -R ../chaincodes/* /var/mynetwork/chaincode/
-cp -R bin/* /var/mynetwork/bin/
+cp -R crypto-config ${VOLUMES_DIR}/certs/
+cp -R config ${VOLUMES_DIR}/certs/
+cp -R ../chaincodes/* ${VOLUMES_DIR}/chaincode/
+cp -R bin/* ${VOLUMES_DIR}/bin/
