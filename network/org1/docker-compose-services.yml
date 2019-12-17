@@ -22,7 +22,7 @@ services:
             placement:
                 constraints:
                     - node.hostname == intel-sawtooth
-        image: hyperledger/fabric-ca:x86_64-1.1.0
+        image: hyperledger/fabric-ca
         hostname: ca.org1.example.com
         environment:
             - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
@@ -45,7 +45,7 @@ services:
             placement:
                 constraints:
                     - node.hostname == intel-sawtooth
-        image: hyperledger/fabric-tools:x86_64-1.1.0
+        image: hyperledger/fabric-tools
         tty: true
         hostname: cli
         environment:
@@ -85,7 +85,7 @@ services:
             placement:
                 constraints:
                     - node.hostname == intel-sawtooth
-        image: hyperledger/fabric-couchdb:x86_64-0.4.6
+        image: hyperledger/fabric-couchdb
         hostname: couchdb0_org1
         networks:
            - skcript    
@@ -100,7 +100,7 @@ services:
             placement:
                 constraints:
                     - node.hostname == intel-sawtooth
-        image: hyperledger/fabric-couchdb:x86_64-0.4.6
+        image: hyperledger/fabric-couchdb
         hostname: couchdb1_org1
         networks:
            - skcript    

@@ -10,12 +10,14 @@ source ${PWD}/.env
 for imageName in ${FABRIC_IMAGE_NAMES[@]}; do
   echo "Pulling ${FABRIC_DOCKER_NS}/$imageName:${FABRIC_IMAGE_VERSION}"
   docker pull ${FABRIC_DOCKER_NS}/$imageName:${FABRIC_IMAGE_VERSION}
+  docker tag ${FABRIC_DOCKER_NS}/$imageName:${FABRIC_IMAGE_VERSION} ${FABRIC_DOCKER_NS}/$imageName:latest
 done
 
 for imageName in ${FABRIC_THIRD_PARTY_IMAGE_NAMES[@]}; do
   echo "Pulling "
   docker pull ${FABRIC_DOCKER_NS}/$imageName:${THIRD_PARTY_IMAGE_VERSION}
+  docker tag ${FABRIC_DOCKER_NS}/$imageName:${THIRD_PARTY_IMAGE_VERSION} ${FABRIC_DOCKER_NS}/$imageName:latest
 done
 
-# echo "Pulling ${FABRIC_DOCKER_NS}/fabric-baseos:${BASE_DOCKER_TAG}"
-# docker pull ${FABRIC_DOCKER_NS}/fabric-baseos:${BASE_DOCKER_TAG}
+# echo "Pulling ${FABRIC_DOCKER_NS}/fabric-baseos:${THIRD_PARTY_IMAGE_VERSION}"
+# docker pull ${FABRIC_DOCKER_NS}/fabric-baseos:${THIRD_PARTY_IMAGE_VERSION}
