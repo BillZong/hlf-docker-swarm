@@ -1,0 +1,1 @@
+docker stack ls | awk '{print $1}' | while read s; do docker stack rm $s; done
