@@ -44,10 +44,8 @@ replaceOrdererCompose() {
     local HOSTNAME=$1
     local ORDERER_COMPOSE_PATH=$2
 
-    if [ -n "$ORDERER_COMPOSE_PATH" ]; then
-        sed "$FLAG" "s/- node.hostname == .*/- node.hostname == $HOSTNAME/g" $ORDERER_COMPOSE_PATH
-        sed "$FLAG" "s#- .*/certs#- $VOLUMES_DIR/certs#g" $ORDERER_COMPOSE_PATH
-    fi
+    sed "$FLAG" "s/- node.hostname == .*/- node.hostname == $HOSTNAME/g" $ORDERER_COMPOSE_PATH
+    sed "$FLAG" "s#- .*/certs#- $VOLUMES_DIR/certs#g" $ORDERER_COMPOSE_PATH
 }
 
 replacePeerCompose() {
@@ -59,43 +57,40 @@ replacePeerCompose() {
     local HOSTNAME=$1
     local PEER_ORG_COMPOSE_PATH=$2
 
-    if [ -n "$PEER_ORG_COMPOSE_PATH" ]; then
-        sed "$FLAG" "s/- node.hostname == .*/- node.hostname == $HOSTNAME/g" $PEER_ORG_COMPOSE_PATH
-        sed "$FLAG" "s#- .*/certs#- $VOLUMES_DIR/certs#g" $PEER_ORG_COMPOSE_PATH
-    fi
+    sed "$FLAG" "s/- node.hostname == .*/- node.hostname == $HOSTNAME/g" $PEER_ORG_COMPOSE_PATH
+    sed "$FLAG" "s#- .*/certs#- $VOLUMES_DIR/certs#g" $PEER_ORG_COMPOSE_PATH
 }
 
 replaceServiceCompose() {
-    if [ $# -lt 2 ]; then
-        echo "Usage: replaceOrgFunc hostname service_org_compose_path"
+    if [ $# -lt 3 ]; then
+        echo "Usage: replaceOrgFunc hostname service_org_compose_path org_ca_path"
         exit 1
     fi
 
     local HOSTNAME=$1
     local SERVICE_ORG_COMPOSE_PATH=$2
 
-    if [ -n "$SERVICE_ORG_COMPOSE_PATH" ]; then
-        ORG_CA_PATH=$(ls $VOLUMES_DIR/certs/crypto-config/peerOrganizations/org$INDEX.example.com/ca/ | grep "_sk")
-        sed "$FLAG" "s/- node.hostname == .*/- node.hostname == $HOSTNAME/g" $SERVICE_ORG_COMPOSE_PATH
-        sed "$FLAG" "s#- FABRIC_CA_SERVER_CA_KEYFILE=/etc/hyperledger/fabric-ca-server-config/.*#- FABRIC_CA_SERVER_CA_KEYFILE=/etc/hyperledger/fabric-ca-server-config/$ORG_CA_PATH#g" $SERVICE_ORG_COMPOSE_PATH
+    ORG_CA_PATH=$(ls $3 | grep "_sk")
+    sed "$FLAG" "s/- node.hostname == .*/- node.hostname == $HOSTNAME/g" $SERVICE_ORG_COMPOSE_PATH
+    sed "$FLAG" "s#- FABRIC_CA_SERVER_CA_KEYFILE=/etc/hyperledger/fabric-ca-server-config/.*#- FABRIC_CA_SERVER_CA_KEYFILE=/etc/hyperledger/fabric-ca-server-config/$ORG_CA_PATH#g" $SERVICE_ORG_COMPOSE_PATH
 
-        sed "$FLAG" "s#- .*/certs#- $VOLUMES_DIR/certs#g" $SERVICE_ORG_COMPOSE_PATH
-        sed "$FLAG" "s#- .*/chaincode:#- $VOLUMES_DIR/chaincode:#g" $SERVICE_ORG_COMPOSE_PATH
-        sed "$FLAG" "s#- .*/fabric-src/#- $VOLUMES_DIR/fabric-src/#g" $SERVICE_ORG_COMPOSE_PATH
-        sed "$FLAG" "s#- .*/bin/:#- $VOLUMES_DIR/bin/:#g" $SERVICE_ORG_COMPOSE_PATH
-    fi
+    sed "$FLAG" "s#- .*/certs#- $VOLUMES_DIR/certs#g" $SERVICE_ORG_COMPOSE_PATH
+    sed "$FLAG" "s#- .*/chaincode:#- $VOLUMES_DIR/chaincode:#g" $SERVICE_ORG_COMPOSE_PATH
+    sed "$FLAG" "s#- .*/fabric-src/#- $VOLUMES_DIR/fabric-src/#g" $SERVICE_ORG_COMPOSE_PATH
+    sed "$FLAG" "s#- .*/bin/:#- $VOLUMES_DIR/bin/:#g" $SERVICE_ORG_COMPOSE_PATH
 }
 
 replaceOrgFunc() {
-    if [ $# -lt 2 ]; then
-        echo "Usage: replaceOrgFunc hostname [service_org_compose_path] [peer_org_compose_path]  [orderer_compose_path]"
+    if [ $# -lt 3 ]; then
+        echo "Usage: replaceOrgFunc index hostname service_org_compose_path [peer_org_compose_path]  [orderer_compose_path]"
         exit 1
     fi
 
-    local HOSTNAME=$1
-    local SERVICE_ORG_COMPOSE_PATH=$2
-    local PEER_ORG_COMPOSE_PATH=$3
-    local ORDERER_COMPOSE_PATH=$4
+    local ORG_CA_PATH="$VOLUMES_DIR/certs/crypto-config/peerOrganizations/org$1.example.com/ca/"
+    local HOSTNAME=$2
+    local SERVICE_ORG_COMPOSE_PATH=$3
+    local PEER_ORG_COMPOSE_PATH=$4
+    local ORDERER_COMPOSE_PATH=$5
 
     if [ -n "$ORDERER_COMPOSE_PATH" ]; then
         replaceOrdererCompose $HOSTNAME $ORDERER_COMPOSE_PATH
@@ -104,22 +99,25 @@ replaceOrgFunc() {
         replacePeerCompose $HOSTNAME $PEER_ORG_COMPOSE_PATH
     fi
     if [ -n "$SERVICE_ORG_COMPOSE_PATH" ]; then
-        replaceServiceCompose $HOSTNAME $SERVICE_ORG_COMPOSE_PATH
+        replaceServiceCompose $HOSTNAME $SERVICE_ORG_COMPOSE_PATH $ORG_CA_PATH
     fi
 }
 
 # Org1
-replaceOrgFunc ${ORG1_HOSTNAME} ${SERVICE_ORG1_COMPOSE_PATH} ${PEER_ORG1_COMPOSE_PATH} ${ORDERER0_COMPOSE_PATH}
+replaceOrgFunc 1 ${ORG1_HOSTNAME} ${SERVICE_ORG1_COMPOSE_PATH} \
+${PEER_ORG1_COMPOSE_PATH} ${ORDERER0_COMPOSE_PATH}
 replaceNetworkName $SERVICE_ORG1_COMPOSE_PATH $OLD_NETWORK_NAME $NETWORK_NAME
 replaceNetworkName $PEER_ORG1_COMPOSE_PATH $OLD_NETWORK_NAME $NETWORK_NAME
 replaceNetworkName $ORDERER0_COMPOSE_PATH $OLD_NETWORK_NAME $NETWORK_NAME
 # Org2
-replaceOrgFunc ${ORG2_HOSTNAME} ${SERVICE_ORG2_COMPOSE_PATH} ${PEER_ORG2_COMPOSE_PATH} ${ORDERER1_COMPOSE_PATH}
+replaceOrgFunc 2 ${ORG2_HOSTNAME} ${SERVICE_ORG2_COMPOSE_PATH} \
+${PEER_ORG2_COMPOSE_PATH} ${ORDERER1_COMPOSE_PATH}
 replaceNetworkName $SERVICE_ORG2_COMPOSE_PATH $OLD_NETWORK_NAME $NETWORK_NAME
 replaceNetworkName $PEER_ORG2_COMPOSE_PATH $OLD_NETWORK_NAME $NETWORK_NAME
 replaceNetworkName $ORDERER1_COMPOSE_PATH $OLD_NETWORK_NAME $NETWORK_NAME
 # Org3
-replaceOrgFunc ${ORG3_HOSTNAME} ${SERVICE_ORG3_COMPOSE_PATH} ${PEER_ORG3_COMPOSE_PATH} ${ORDERER2_COMPOSE_PATH}
+replaceOrgFunc 3 ${ORG3_HOSTNAME} ${SERVICE_ORG3_COMPOSE_PATH} \
+${PEER_ORG3_COMPOSE_PATH} ${ORDERER2_COMPOSE_PATH}
 replaceNetworkName $SERVICE_ORG3_COMPOSE_PATH $OLD_NETWORK_NAME $NETWORK_NAME
 replaceNetworkName $PEER_ORG3_COMPOSE_PATH $OLD_NETWORK_NAME $NETWORK_NAME
 replaceNetworkName $ORDERER2_COMPOSE_PATH $OLD_NETWORK_NAME $NETWORK_NAME
