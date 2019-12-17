@@ -108,6 +108,28 @@ sed "$FLAG" "s#- .*/chaincode:#- $VOLUMES_DIR/chaincode:#g" $SERVICE_ORG7_COMPOS
 sed "$FLAG" "s#- .*/fabric-src/#- $VOLUMES_DIR/fabric-src/#g" $SERVICE_ORG7_COMPOSE_PATH
 sed "$FLAG" "s#- .*/bin/:#- $VOLUMES_DIR/bin/:#g" $SERVICE_ORG7_COMPOSE_PATH
 
+# Replace all network names
+# TODO: have to be more specific to roll back
+sed "$FLAG" "s/skcript/$NETWORK_NAME/g" $KAFKA_COMPOSE_PATH
+sed "$FLAG" "s/skcript/$NETWORK_NAME/g" $ZK_COMPOSE_PATH
+sed "$FLAG" "s/skcript/$NETWORK_NAME/g" $ORDERER0_COMPOSE_PATH
+sed "$FLAG" "s/skcript/$NETWORK_NAME/g" $ORDERER1_COMPOSE_PATH
+sed "$FLAG" "s/skcript/$NETWORK_NAME/g" $ORDERER2_COMPOSE_PATH
+sed "$FLAG" "s/skcript/$NETWORK_NAME/g" $PEER_ORG1_COMPOSE_PATH
+sed "$FLAG" "s/skcript/$NETWORK_NAME/g" $PEER_ORG2_COMPOSE_PATH
+sed "$FLAG" "s/skcript/$NETWORK_NAME/g" $PEER_ORG3_COMPOSE_PATH
+sed "$FLAG" "s/skcript/$NETWORK_NAME/g" $PEER_ORG4_COMPOSE_PATH
+sed "$FLAG" "s/skcript/$NETWORK_NAME/g" $PEER_ORG5_COMPOSE_PATH
+sed "$FLAG" "s/skcript/$NETWORK_NAME/g" $PEER_ORG6_COMPOSE_PATH
+sed "$FLAG" "s/skcript/$NETWORK_NAME/g" $PEER_ORG7_COMPOSE_PATH
+sed "$FLAG" "s/skcript/$NETWORK_NAME/g" $SERVICE_ORG1_COMPOSE_PATH
+sed "$FLAG" "s/skcript/$NETWORK_NAME/g" $SERVICE_ORG2_COMPOSE_PATH
+sed "$FLAG" "s/skcript/$NETWORK_NAME/g" $SERVICE_ORG3_COMPOSE_PATH
+sed "$FLAG" "s/skcript/$NETWORK_NAME/g" $SERVICE_ORG4_COMPOSE_PATH
+sed "$FLAG" "s/skcript/$NETWORK_NAME/g" $SERVICE_ORG5_COMPOSE_PATH
+sed "$FLAG" "s/skcript/$NETWORK_NAME/g" $SERVICE_ORG6_COMPOSE_PATH
+sed "$FLAG" "s/skcript/$NETWORK_NAME/g" $SERVICE_ORG7_COMPOSE_PATH
+
 if [ "$ARCH" == "Darwin" ]; then
   rm */**.ymlt
 fi
