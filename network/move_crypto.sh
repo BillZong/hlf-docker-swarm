@@ -11,7 +11,7 @@ if [ ! -d ../../fabric ]; then
     echo "downloading the fabric src..."
     git clone https://github.com/hyperledger/fabric ../../fabric
 fi
-cp -r /root/fabric/fabric ${VOLUMES_DIR}/fabric-src/hyperledger/
+cp -r ../../fabric ${VOLUMES_DIR}/fabric-src/hyperledger/
 cd ${VOLUMES_DIR}/fabric-src/hyperledger/fabric
 git checkout ${FABRIC_VERSION}
 # rm -rf .git # keep it small enough
