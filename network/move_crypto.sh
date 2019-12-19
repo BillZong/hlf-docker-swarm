@@ -21,7 +21,7 @@ cp -R crypto-config ${VOLUMES_DIR}/certs/
 cp -R config ${VOLUMES_DIR}/certs/
 cp -R ../chaincodes/* ${VOLUMES_DIR}/chaincode/
 
-downloadBinary() {
+function downloadBinary() {
     binaryFileName=hyperledger-fabric-$FABRIC_IMAGE_ARCH-$FABRIC_IMAGE_VERSION.tar.gz
     if [ ! -f ../../$binaryFileName ]; then
         curl -LO https://github.com/hyperledger/fabric/releases/download/$FABRIC_VERSION/$binaryFileName

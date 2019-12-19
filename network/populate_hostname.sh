@@ -15,7 +15,7 @@ elif [ "$ARCH" == "Darwin" ]; then
 fi
 
 # Replace all network names
-replaceNetworkName() {
+function replaceNetworkName() {
     if [ $# -lt 3 ]; then
         echo "Usage: replaceNetworkName file_path oldname newname"
         exit 1
@@ -35,7 +35,7 @@ sed "$FLAG" "s/- node.hostname == .*/- node.hostname == $ORG1_HOSTNAME/g" $KAFKA
 replaceNetworkName $ZK_COMPOSE_PATH $OLD_NETWORK_NAME $NETWORK_NAME
 replaceNetworkName $KAFKA_COMPOSE_PATH $OLD_NETWORK_NAME $NETWORK_NAME
 
-replaceOrdererCompose() {
+function replaceOrdererCompose() {
     if [ $# -lt 2 ]; then
         echo "Usage: replaceOrgFunc hostname orderer_compose_path"
         exit 1
@@ -48,7 +48,7 @@ replaceOrdererCompose() {
     sed "$FLAG" "s#- .*/certs#- $VOLUMES_DIR/certs#g" $ORDERER_COMPOSE_PATH
 }
 
-replacePeerCompose() {
+function replacePeerCompose() {
     if [ $# -lt 2 ]; then
         echo "Usage: replaceOrgFunc hostname peer_org_compose_path"
         exit 1
@@ -61,7 +61,7 @@ replacePeerCompose() {
     sed "$FLAG" "s#- .*/certs#- $VOLUMES_DIR/certs#g" $PEER_ORG_COMPOSE_PATH
 }
 
-replaceServiceCompose() {
+function replaceServiceCompose() {
     if [ $# -lt 3 ]; then
         echo "Usage: replaceOrgFunc hostname service_org_compose_path org_ca_path"
         exit 1
