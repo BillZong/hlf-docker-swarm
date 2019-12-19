@@ -2,6 +2,5 @@ network/bin/
 node_modules/
 .DS_Store
 **/*/*.ymlt
-network/config/configtx.yaml
-network/config/core.yaml
-network/config/orderer.yaml
+network/config/
+network/crypto-config/
