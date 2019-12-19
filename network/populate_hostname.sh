@@ -24,11 +24,9 @@ function replaceNetworkName() {
     # TODO: have to be more specific to roll back
     sed "$FLAG" "s/$2/$3/g" $1
 }
-sed "$FLAG" "s/skcript/$NETWORK_NAME/g" $ZK_COMPOSE_PATH
-sed "$FLAG" "s/skcript/$NETWORK_NAME/g" $KAFKA_COMPOSE_PATH # network
-
 
 # Zookeeper + Kafka
+# #TODO: All modified to one host? That's not robust. Might be set by manual.
 sed "$FLAG" "s/- node.hostname == .*/- node.hostname == $ORG1_HOSTNAME/g" $ZK_COMPOSE_PATH
 sed "$FLAG" "s/- node.hostname == .*/- node.hostname == $ORG1_HOSTNAME/g" $KAFKA_COMPOSE_PATH
 # # network of ZK and Kafka
